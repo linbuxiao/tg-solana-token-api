@@ -1,0 +1,66 @@
+version: '3'
+
+x-common-env: &common-env
+  api_id: ${api_id}
+  api_hash: ${api_hash}
+  phone: ${phone}
+  dogee_group: ${dogee_group}
+  proxy_host: ${proxy_host}
+  proxy_port: ${proxy_port}
+
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: ./dockerfile/server
+    ports:
+      - "5002:5002"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      <<: *common-env
+    depends_on:
+      - worker
+
+  sub_tg:
+    build:
+      context: .
+      dockerfile: ./dockerfile/sub_tg
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      <<: *common-env
+    depends_on:
+      - worker
+    volumes:
+      - ./pub_tg.session:/worker/pub_tg.session
+      - ./sub_tg.session:/worker/sub_tg.session
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_LOGLEVEL=error
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 20s
+      retries: 5
+
+  worker:
+    build:
+      context: .
+      dockerfile: ./dockerfile/worker
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      <<: *common-env
+    volumes:
+      - ./pub_tg.session:/worker/pub_tg.session
+      - ./sub_tg.session:/worker/sub_tg.session
+    depends_on:
+      rabbitmq:
+        condition: service_healthy

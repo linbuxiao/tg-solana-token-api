@@ -1,0 +1,11 @@
+FROM sanicframework/sanic:lts-py3.11
+WORKDIR /sanic
+
+COPY . .
+
+RUN pip install -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple --trusted-host --trusted-host uv
+RUN uv sync
+
+EXPOSE 5002
+
+CMD ["./.venv/bin/python", "-m", "src.server"]

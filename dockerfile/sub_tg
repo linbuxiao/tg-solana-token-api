@@ -1,0 +1,9 @@
+FROM python:3.11-slim-bullseye
+WORKDIR /app
+
+COPY . .
+
+RUN pip install -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple --trusted-host --trusted-host uv
+RUN uv sync
+
+CMD ["./.venv/bin/python", "-m", "src.sub_tg"]
