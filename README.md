@@ -2,10 +2,6 @@
 
 Make telegram solana token info bot as your API.
 
-## Usage Restrictions
-
-This project is for personal research purposes only and should not be used for commercial applications. The code and materials in this repository are not intended for commercial use.
-
 ## Preview
 
 If u have a bot like this:
@@ -18,3 +14,6 @@ Now u have the API like this:
 ![dogee_in_api](images/api_dogee.png)
 
 Simple but useful.
+
+## License
+This work is licensed under a [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0).
